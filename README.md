@@ -1,33 +1,36 @@
 ![Architecture Diagram](neuron.webp)
 
-<h1 align="center">High Performance Text Analysis with HuggingFace GPT-2 on AWS Neuron</h1>
+<h1 align="center">High Performance Text Analysis with HuggingFace GPT-2 on AWS Neuron with AWS Inferentia</h1>
 
 <p align="center">
   <a href="www.cloudacademy.com">
-    <img src="https://img.shields.io/badge/-Demo Coming Soon-blue" alt="AWS Neuron">
+    <img src="https://img.shields.io/badge/-Lesson Coming Soon-blue" alt="AWS Neuron">
   </a>
 </p>
 
 Welcome to this repository dedicated to utilizing the `AWS Deep Learning AMI` with the `Neuron SDK` and `PyTorch` on `AWS Inferentia` to compile and execute the `HuggingFace GPT-2` model.
 
-GPT-2 Model and Feature Extraction The HuggingFace Pretrained GPT-2 model, developed in the PyTorch framework, generates coherent and contextually relevant text. Our focus on feature extraction demonstrates how the GPT-2 model processes input text, converting it into numerical features. This capability is essential for advanced text analysis tasks, utilizing AWS Inferentia to accelerate deep learning inference. This approach enhances the speed and efficiency of text analysis, setting the stage for a variety of applications, from sentiment analysis to automated content generation.
+The HuggingFace Pretrained GPT-2 model, developed in the PyTorch framework, generates coherent and contextually relevant text. Our focus on feature extraction demonstrates how the GPT-2 model processes input text, converting it into numerical features. This capability is essential for advanced text analysis tasks, utilizing AWS Inferentia to accelerate deep learning inference. This approach enhances the speed and efficiency of text analysis, setting the stage for a variety of applications, from sentiment analysis to automated content generation.
 
 >  This repository provides a brief overview of the key concepts and steps involved for conducting high-performance text analysis using the HuggingFace GPT-2 model on AWS Neuron. It covers key steps to compile and execute GPT-2 for optimized inference on AWS Inferentia chips.  Please note, this repo is designed to be used in conjunction with our lesson @ Cloud Academy. It contains essential Python scripts and additional resources that are necessary for following along with the demo. 
 
-## Step 1: Request Service Quota Increase
+## Prerequisites
+- AWS CLI.
+- EC2 Inf Instances with at least 4 vCPUs available.
 
-Before setting up your deep learning environment on AWS, follow these initial steps:
+## Request Service Quota Increase
 
-- Confirm you have the necessary service quota to launch an EC2 `inf2` instance.
+Before setting up the deep learning environment on AWS, follow these initial steps:
 
-- Request a service quota increase for inf instances to ensure you have at least `4 vCPUs` available. 
-  - Essential for launching an `inf2.xlarge` instance.
+- Confirm you have the necessary service quota to launch an `inf2.xlarge` instance.
 
-## Step 2: Launch Deep Learning AMI
+- If not, request a service quota increase for EC2 Inf instances ensuring you have at least `4 vCPUs` available. 
 
-Set up your AWS environment by launching the appropriate Deep Learning AMI:
+## Launch Deep Learning AMI
 
-- Launch the `Deep Learning AMI Neuron PyTorch (Amazon Linux 2)` in the `us-east-1` region. For detailed information, refer to the [Release Notes](https://aws.amazon.com/releasenotes/aws-deep-learning-ami-neuron-pytorch-1-13-amazon-linux-2/).
+Set up the AWS environment by launching the appropriate Deep Learning AMI:
+
+- Launch the `Deep Learning AMI Neuron PyTorch (Amazon Linux 2)` in the `us-east-1` region. For detailed information, refer to the [AWS Release Notes](https://aws.amazon.com/releasenotes/aws-deep-learning-ami-neuron-pytorch-1-13-amazon-linux-2/).
 
 - To find the latest AMI-ID, execute the following command in your terminal or command prompt :
 
@@ -35,30 +38,29 @@ Set up your AWS environment by launching the appropriate Deep Learning AMI:
 aws ec2 describe-images --region us-east-1 --owners amazon --filters 'Name=name,Values=Deep Learning AMI Neuron PyTorch 1.13 (Amazon Linux 2) ????????' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text
 ```
 
-- With the AMI ID you've obtained, launch an EC2 `inf2.xlarge` instance.
-  - Create and download a new key pair for SSH access.
+- With the AMI ID you've obtained, launch an EC2 `inf2.xlarge` instance,with a key pair for SSH access.
 
-## Step 3: Establish SSH Connection
+## Establish SSH Connection to the Inf2 Instance
 
-- Use a terminal or command prompt to establish a secure SSH connection to the `inf2` instance using the private key file (.pem) for authentication.
+- Use a terminal to establish a secure SSH connection to the `inf2` instance using the private key file (.pem) for authentication.
 
-## Step 4: Update System and Environment Setup
+## Activate PyTorch Environment & Verify Dependencies
 
-After establishing an SSH connection to your inf2 instance, update system packages, activate the PyTorch Neuron environment, and verify key Python packages.
+After establishing an SSH connection to the EC2 Inf2 instance, update system packages, activate the PyTorch Neuron environment, and verify key Python packages.
 
-**Update System Packages:**
+**a) Update System Packages:**
 
 ```bash
 sudo yum update -y
 ```
 
-**Activate PyTorch Neuron Environment:**
+**b) Activate PyTorch Neuron Environment:**
 
 ```bash
 source /opt/aws_neuron_venv_pytorch/bin/activate
 ```
 
-**Verify Installation of Key Packages:**
+**c) Verify Installation of Key Packages:**
 
 ```bash
 pip show torch-neuronx
@@ -66,35 +68,42 @@ pip show neuronx-cc
 pip show transformers
 ```
 
-- These packages are pre-installed with the Deep Learning AMI by AWS.
+These packages are pre-installed with the Deep Learning AMI by AWS.
 
-**Update Neuron Compiler and PyTorch Library:**
+**d) Update Neuron Compiler and PyTorch Library:**
 
 ```bash
 python -m pip install --upgrade neuronx-cc==2.* torch-neuronx torchvision
 ```
 
-## Step 5: Access Jupyter Notebook via SSH Tunneling
+## Launch & Access Jupyter Notebook via SSH Tunneling
 
-Set up and access a Jupyter Notebook on your EC2 instance powered by the Deep Learning AMI, using SSH tunneling for secure access.
+Launch and access a Jupyter Notebook on your EC2 Inf2 instance powered by the Deep Learning AMI, using SSH tunneling for secure access.
 
-**Verify Environment and Pre-installed Packages:**
+**a) Verify Environment and Pre-installed Packages:**
 
-- Check that Jupyter Notebook and ipykernel are installed:
-  - For Jupyter Notebook: `jupyter notebook --version`
-  - For ipykernel: `pip show ipykernel`
-- These packages are also pre-installed with the Deep Learning AMI by AWS.
+- Check that Jupyter Notebook is installed:
+  
+  ```bash
+  jupyter notebook --version
+  ```
+- Check that ipykernel is installed
+  
+  ```bash
+  pip show ipykernel
+  ```
+These packages are also pre-installed with the Deep Learning AMI by AWS.
 
 
-**Install Neuron-PyTorch Jupyter Kernel:**
+**b) Install Neuron-PyTorch Jupyter Kernel:**
 
 - Install the `Neuron-PyTorch Jupyter Kernel` to leverage the AWS Neuron optimized PyTorch environment:
 
-```bash
-python3.8 -m ipykernel install --user --name aws_neuron_venv_pytorch --display-name "Python (torch-neuronx)"
-```
+  ```bash
+  python3.8 -m ipykernel install --user --name aws_neuron_venv_pytorch --display-name "Python (torch-neuronx)"
+  ```
 
-**Additional Configuration:**
+**c) Additional Configuration:**
 
 - Install `environment_kernels` for environment management within Jupyter:
 
@@ -108,25 +117,25 @@ python3.8 -m ipykernel install --user --name aws_neuron_venv_pytorch --display-n
   python -m pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
   ```
 
-**Start the Jupyter Notebook Server**
+**d) Start the Jupyter Notebook Server**
 
-- Initiate the Jupyter Notebook server & Create SSH Tunnel:
+- Initiate the Jupyter Notebook server & create SSH Tunnel:
 
-```bash
-jupyter notebook --no-browser --port=8888
-```
+  ```bash
+  jupyter notebook --no-browser --port=8888
+  ```
 
-- create an SSH tunnel to securely forward local traffic to the EC2 instance for Jupyter Notebook access:
+- Create an SSH tunnel to securely forward local traffic to the EC2 Inf2 instance for Jupyter Notebook access:
 
-```bash
-ssh -L 8888:localhost:8888 /path/key-pair-.pem ec2-user@instance-public-dns
-```
+  ```bash
+  ssh -L 8888:localhost:8888 /path/key-pair.pem ec2-user@instance-public-dns
+  ```
 
-## Step 6: Optimize and Deploy GPT-2 Models on AWS Inf2 Instances
+## Optimize and Deploy GPT-2 Models on AWS Neuron
 
 This step outlines the process of setting up and optimizing a GPT-2 model for feature extraction using AWS Neuron, including initial setup, compilation into a Neuron-optimized TorchScript, and benchmarking performance gains on AWS Inferentia chips.
 
- > You can automate the optimization and deployment process by executing the three Python scripts from the GitHub repository in a single Jupyter notebook cell.
+ > You can automate the optimization and deployment process by executing all three Python scripts from the GitHub repository in a single Jupyter notebook cell.
 
 ### a) Initial Setup
 
@@ -157,7 +166,7 @@ import torch_neuronx
 from transformers import GPT2Tokenizer, GPT2Model
 ```
 
-- These imports provide the tools needed for model loading, feature extraction, and optimization on AWS Neuron.
+These imports provide the tools needed for model loading, feature extraction, and optimization on AWS Neuron.
 
 ### c) Create the Model Wrapper
 
@@ -173,7 +182,7 @@ class GPT2Neuron(torch.nn.Module):
         return self.model(input_ids=input_ids, attention_mask=attention_mask)
 ```
 
-- This wrapper allows the model to process inputs directly, facilitating the integration with Neuron SDK.
+This wrapper allows the model to process inputs directly, facilitating the integration with Neuron SDK.
 
 ### d) Initialize the Tokenizer and Model
 
@@ -187,7 +196,7 @@ model = GPT2Neuron(gpt2)
 model.eval()
 ```
 
-- This initialization ensures consistent input sizes and optimizes the model for performance with AWS Neuron.
+This initialization ensures consistent input sizes and optimizes the model for performance with AWS Neuron.
 
 ### e) Prepare the Example Input
 
@@ -205,7 +214,7 @@ encoded_input = tokenizer(
 example = (encoded_input['input_ids'], encoded_input['attention_mask'])
 ```
 
-- The encoded input converts text into a format processable by the model, ready for both inference and optimization on AWS Neuron.
+The encoded input converts text into a format processable by the model, ready for both inference and optimization on AWS Neuron.
 
 ### f) Inference and Model Compilation
 
@@ -248,7 +257,7 @@ print(f"CPU outputs:    {output_cpu[0][0][0][:10]}")
 print(f"Neuron outputs: {output_neuron[0][0][0][:10]}")
 ```
 
-- This validation step demonstrates that AWS Neuron optimization maintains model accuracy while enhancing inference efficiency and lowering computational costs.
+This validation step demonstrates that AWS Neuron optimization maintains model accuracy while enhancing inference efficiency and lowering computational costs.
 
 ### I) Measure Inference Time
 
@@ -276,7 +285,7 @@ speedup = inference_time_cpu / inference_time_neuron
 print(f"Neuron is {speedup:.2f} times faster than CPU.")
 ```
 
-- This analysis shows that the optimization significantly reduces inference time, providing substantial performance improvements in deployment environments.
+This analysis shows that the optimization significantly reduces inference time, providing substantial performance improvements in deployment environments.
 
 ### J) Verify AWS Inferentia Utilization
 
@@ -286,4 +295,4 @@ Ensure your deployment efficiently uses AWS Inferentia chips for accelerated per
 neuron-ls
 ```
 
-- Observing your model's PID in the `neuron-ls` output confirms it is leveraging the AWS Neuron device for inference, indicating successful utilization of specialized hardware for enhanced performance.
+Observing your model's PID in the `neuron-ls` output confirms it is leveraging the AWS Neuron device for inference, indicating successful utilization of specialized hardware for enhanced performance.
