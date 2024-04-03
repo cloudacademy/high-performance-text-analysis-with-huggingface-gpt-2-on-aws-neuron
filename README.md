@@ -3,16 +3,16 @@
 <h1 align="center">High Performance Text Analysis with HuggingFace GPT-2 on AWS Neuron with AWS Inferentia</h1>
 
 <p align="center">
-  <a href="www.cloudacademy.com">
-    <img src="https://img.shields.io/badge/-Lesson Coming Soon-blue" alt="AWS Neuron">
+  <a href="https://cloudacademy.com/course/high-performance-text-analysis-huggingface-gpt-2-aws-neuron-aws-inferentia-5935/introduction-28032024101057/">
+    <img src="https://img.shields.io/badge/-Start Lesson-blue" alt="AWS Neuron">
   </a>
 </p>
 
 Welcome to this repository dedicated to utilizing the `AWS Deep Learning AMI` with the `Neuron SDK` and `PyTorch` on `AWS Inferentia` to compile and execute the `HuggingFace GPT-2` model.
 
-The HuggingFace Pretrained GPT-2 model, developed in the PyTorch framework, generates coherent and contextually relevant text. Our focus on feature extraction demonstrates how the GPT-2 model processes input text, converting it into numerical features. This capability is essential for advanced text analysis tasks, utilizing AWS Inferentia to accelerate deep learning inference. This approach enhances the speed and efficiency of text analysis, setting the stage for a variety of applications, from sentiment analysis to automated content generation.
+This repository demonstrates how to leverage the HuggingFace Pretrained GPT-2 model, a language model developed in PyTorch, for efficient text analysis tasks. By utilizing AWS Inferentia chips, you can accelerate deep learning inference and perform high-performance text analysis, such as sentiment analysis and automated content generation.
 
->  This repository provides a brief overview of the key concepts and steps involved for conducting high-performance text analysis using the HuggingFace GPT-2 model on AWS Neuron. It covers key steps to compile and execute GPT-2 for optimized inference on AWS Inferentia chips.  Please note, this repo is designed to be used in conjunction with our lesson @ Cloud Academy. It contains essential Python scripts and additional resources that are necessary for following along with the demo. 
+The GPT-2 model's ability to generate coherent and contextually relevant text makes it suitable for various natural language processing applications. This repository provides a hands-on guide to compiling and executing the GPT-2 model for optimized inference on AWS Inferentia, enabling you to take advantage of this state-of-the-art language model for your text analysis needs.
 
 ## Prerequisites
 - AWS CLI.
@@ -82,12 +82,12 @@ Launch and access a Jupyter Notebook on your EC2 Inf2 instance powered by the De
 
 **a) Verify Environment and Pre-installed Packages:**
 
-- Check that Jupyter Notebook is installed:
+- Check that `Jupyter Notebook` is installed:
   
   ```bash
   jupyter notebook --version
   ```
-- Check that ipykernel is installed
+- Check that `ipykernel` is installed:
   
   ```bash
   pip show ipykernel
@@ -111,7 +111,7 @@ These packages are also pre-installed with the Deep Learning AMI by AWS.
   pip install environment_kernels
   ```
 
-- Set pip to target the Neuron repository for optimized packages:
+- Set pip to target the `Neuron repository` for optimized packages:
 
   ```bash
   python -m pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
